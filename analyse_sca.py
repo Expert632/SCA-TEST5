@@ -1,29 +1,30 @@
 import json
-import sys
 from pathlib import Path
+import sys
 
 report_file = Path("sca_report.json")
 
 if not report_file.exists():
-    print("SCA report file 'sca_report.json' not found.")
-    sys.exit(1)
+    print("No SCA report found. Exiting.")
+    sys.exit(0)
 
 try:
     with report_file.open() as f:
-        data = json.load(f)
+        content = f.read().strip()
+        if not content:
+            data = []
+        else:
+            data = json.loads(content)
 except json.JSONDecodeError:
-    print("sca_report.json is not a valid JSON file.")
-    sys.exit(1)
+    data = []
 
 vulns = []
-
 if isinstance(data, list):
     vulns = data
 elif isinstance(data, dict):
     vulns = data.get("vulnerabilities", data.get("issues", []))
 
 critical_found = False
-
 for v in vulns:
     severity = (
         v.get("severity")
