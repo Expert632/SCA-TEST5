@@ -4,14 +4,18 @@ from pathlib import Path
 report_file = Path("sca_report.json")
 
 if not report_file.exists():
-    raise FileNotFoundError("SCA report file 'sca_report.json' not found.")
+    print("ERROR: SCA report file 'sca_report.json' not found.")
+    exit(1)
 
-with report_file.open() as f:
-    data = json.load(f)
+try:
+    with report_file.open() as f:
+        data = json.load(f)
+except json.JSONDecodeError:
+    print("ERROR: sca_report.json is not a valid JSON file.")
+    exit(1)
 
 vulns = []
 
-# Même logique : supporter liste ou objet
 if isinstance(data, list):
     vulns = data
 elif isinstance(data, dict):
