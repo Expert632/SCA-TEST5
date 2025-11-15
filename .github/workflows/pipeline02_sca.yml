@@ -27,7 +27,7 @@ jobs:
 
       - name: Run SCA Scan (JSON)
         run: |
-          safety check --json > sca_report.json || true
+          safety check --json || true > sca_report.json
 
       - name: Generate TXT Report from JSON
         run: |
