@@ -1,0 +1,33 @@
+name: Pipeline 01 - Syntax Check
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  syntax-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Python Syntax Check
+        run: |
+          python -m py_compile app.py || exit 1
+
+      - name: JavaScript Syntax Check
+        run: |
+          node -c app.js || exit 1
+
+      - name: Java Syntax Check
+        run: |
+          javac App.java || exit 1
+
+      - name: Analyse Rapport
+        run: |
+          python analyse_syntax.py
