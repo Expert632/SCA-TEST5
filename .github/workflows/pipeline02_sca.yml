@@ -1,0 +1,32 @@
+name: Pipeline 02 - SCA Scan
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sca-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Safety (Python SCA)
+        run: pip install safety
+
+      - name: Run SCA Scan
+        run: |
+          safety check --full-report --json > sca_report.json
+
+      - name: Generate TXT Report
+        run: |
+          python generate_sca_txt.py
+
+      - name: Analyse Rapport
+        run: |
+          python analyse_sca.py
