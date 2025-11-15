@@ -8,7 +8,6 @@ on:
 jobs:
   sca-scan:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -18,13 +17,17 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt || true
+
       - name: Install Safety (Python SCA)
         run: |
           pip install safety
 
       - name: Run SCA Scan (JSON)
         run: |
-          safety check --json > sca_report.json
+          safety check --json > sca_report.json || true
 
       - name: Generate TXT Report from JSON
         run: |
@@ -34,7 +37,6 @@ jobs:
         run: |
           python analyse_sca.py
 
-      # (Optionnel mais très pédagogique : upload du rapport TXT)
       - name: Upload TXT report as artifact
         uses: actions/upload-artifact@v4
         with:
