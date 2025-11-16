@@ -4,13 +4,14 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   sca-scan:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Récupérer le code du repo
+      # 1) Récupérer le code du dépôt
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -20,7 +21,11 @@ jobs:
         with:
           python-version: '3.x'
 
-      # 3) Installer les dépendances du projet (requirements.txt)
+      # 3) Afficher la version de Python (optionnel, pédagogique)
+      - name: Show Python version
+        run: python --version
+
+      # 4) Installer les dépendances du projet (requirements.txt)
       - name: Install project dependencies
         run: |
           if [ -f "requirements.txt" ]; then
@@ -30,33 +35,37 @@ jobs:
             echo "No requirements.txt found, skipping dependencies installation."
           fi
 
-      # 4) Installer l'outil SCA (Safety)
+      # 5) Installer l'outil SCA (Safety)
       - name: Install Safety (Python SCA)
         run: |
           pip install safety
 
-      # 5) Lancer le scan SCA et générer sca_report.json
+      # 6) Vérifier la version de Safety (pédagogique)
+      - name: Check Safety version
+        run: safety --version
+
+      # 7) Lancer le scan SCA sur requirements.txt et générer sca_report.json
       - name: Run SCA Scan (JSON)
         run: |
           if [ -f "requirements.txt" ]; then
-            echo "Running Safety SCA scan..."
-            safety check --json > sca_report.json || echo "Safety scan finished with issues."
+            echo "Running Safety SCA scan on requirements.txt..."
+            safety check -r requirements.txt --json > sca_report.json || echo "Safety scan finished with issues."
           else
             echo "No requirements.txt found, creating empty SCA report."
             echo "[]" > sca_report.json
           fi
 
-      # 6) Générer un rapport TXT à partir du JSON (via ton script Python)
+      # 8) Générer un rapport TXT lisible à partir du JSON
       - name: Generate TXT Report from JSON
         run: |
           python generate_sca_txt.py
 
-      # 7) Analyse du rapport SCA (affiche message selon vulnérabilités)
+      # 9) Analyser le rapport SCA et afficher un message pédagogique
       - name: Analyse SCA Report
         run: |
           python analyse_sca.py
 
-      # 8) Uploader le rapport TXT comme artifact téléchargeable
+      # 10) Uploader le rapport TXT comme artefact téléchargeable
       - name: Upload TXT report as artifact
         uses: actions/upload-artifact@v4
         with:
