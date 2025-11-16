@@ -12,36 +12,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Python
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      # Exemple de fichier Python à vérifier
       - name: Python Syntax Check
         run: |
           if [ -f "app.py" ]; then
-            python -m py_compile app.py || exit 1
-          else:
-            echo "No app.py found, skipping Python syntax check."
+              python -m py_compile app.py || exit 1
+          else
+              echo "No app.py found, skipping Python syntax check."
           fi
 
-      # Exemple JS
       - name: JavaScript Syntax Check
         run: |
           if [ -f "app.js" ]; then
-            node -c app.js || exit 1
-          else:
-            echo "No app.js found, skipping JS syntax check."
+              node -c app.js || exit 1
+          else
+              echo "No app.js found, skipping JS syntax check."
           fi
 
-      # Exemple Java
       - name: Java Syntax Check
         run: |
           if [ -f "App.java" ]; then
-            javac App.java || exit 1
-          else:
-            echo "No App.java found, skipping Java syntax check."
+              javac App.java || exit 1
+          else
+              echo "No App.java found, skipping Java syntax check."
           fi
 
       - name: Analyse Rapport
