@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Python
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
@@ -20,9 +20,9 @@ jobs:
       - name: Install dependencies
         run: |
           if [ -f "requirements.txt" ]; then
-            pip install -r requirements.txt || true
-          else:
-            echo "No requirements.txt found, skipping dependencies installation."
+              pip install -r requirements.txt || true
+          else
+              echo "No requirements.txt found, skipping dependencies installation."
           fi
 
       - name: Install Safety (Python SCA)
@@ -32,10 +32,10 @@ jobs:
       - name: Run SCA Scan (JSON)
         run: |
           if [ -f "requirements.txt" ]; then
-            safety check --json > sca_report.json || echo "Safety scan finished with issues."
-          else:
-            echo "[]" > sca_report.json
-            echo "No requirements.txt, creating empty SCA report."
+              safety check --json > sca_report.json || echo "Safety scan finished with issues."
+          else
+              echo "No requirements.txt found, creating empty SCA report."
+              echo "[]" > sca_report.json
           fi
 
       - name: Generate TXT Report from JSON
