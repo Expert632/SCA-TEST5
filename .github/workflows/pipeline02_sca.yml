@@ -19,7 +19,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt || true
+          if [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt || true
+          else:
+            echo "No requirements.txt found, skipping dependencies installation."
+          fi
 
       - name: Install Safety (Python SCA)
         run: |
@@ -27,7 +31,12 @@ jobs:
 
       - name: Run SCA Scan (JSON)
         run: |
-          safety check --json || true > sca_report.json
+          if [ -f "requirements.txt" ]; then
+            safety check --json > sca_report.json || echo "Safety scan finished with issues."
+          else:
+            echo "[]" > sca_report.json
+            echo "No requirements.txt, creating empty SCA report."
+          fi
 
       - name: Generate TXT Report from JSON
         run: |
