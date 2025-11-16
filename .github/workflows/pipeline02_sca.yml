@@ -8,44 +8,55 @@ on:
 jobs:
   sca-scan:
     runs-on: ubuntu-latest
+
     steps:
+      # 1) Récupérer le code du repo
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # 2) Installer Python
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
+      # 3) Installer les dépendances du projet (requirements.txt)
+      - name: Install project dependencies
         run: |
           if [ -f "requirements.txt" ]; then
-              pip install -r requirements.txt || true
+            echo "requirements.txt found, installing dependencies..."
+            pip install -r requirements.txt || true
           else
-              echo "No requirements.txt found, skipping dependencies installation."
+            echo "No requirements.txt found, skipping dependencies installation."
           fi
 
+      # 4) Installer l'outil SCA (Safety)
       - name: Install Safety (Python SCA)
         run: |
           pip install safety
 
+      # 5) Lancer le scan SCA et générer sca_report.json
       - name: Run SCA Scan (JSON)
         run: |
           if [ -f "requirements.txt" ]; then
-              safety check --json > sca_report.json || echo "Safety scan finished with issues."
+            echo "Running Safety SCA scan..."
+            safety check --json > sca_report.json || echo "Safety scan finished with issues."
           else
-              echo "No requirements.txt found, creating empty SCA report."
-              echo "[]" > sca_report.json
+            echo "No requirements.txt found, creating empty SCA report."
+            echo "[]" > sca_report.json
           fi
 
+      # 6) Générer un rapport TXT à partir du JSON (via ton script Python)
       - name: Generate TXT Report from JSON
         run: |
           python generate_sca_txt.py
 
+      # 7) Analyse du rapport SCA (affiche message selon vulnérabilités)
       - name: Analyse SCA Report
         run: |
           python analyse_sca.py
 
+      # 8) Uploader le rapport TXT comme artifact téléchargeable
       - name: Upload TXT report as artifact
         uses: actions/upload-artifact@v4
         with:
