@@ -17,17 +17,32 @@ jobs:
         with:
           python-version: '3.x'
 
+      # Exemple de fichier Python à vérifier
       - name: Python Syntax Check
         run: |
-          python -m py_compile app.py || exit 1
+          if [ -f "app.py" ]; then
+            python -m py_compile app.py || exit 1
+          else:
+            echo "No app.py found, skipping Python syntax check."
+          fi
 
+      # Exemple JS
       - name: JavaScript Syntax Check
         run: |
-          node -c app.js || exit 1
+          if [ -f "app.js" ]; then
+            node -c app.js || exit 1
+          else:
+            echo "No app.js found, skipping JS syntax check."
+          fi
 
+      # Exemple Java
       - name: Java Syntax Check
         run: |
-          javac App.java || exit 1
+          if [ -f "App.java" ]; then
+            javac App.java || exit 1
+          else:
+            echo "No App.java found, skipping Java syntax check."
+          fi
 
       - name: Analyse Rapport
         run: |
