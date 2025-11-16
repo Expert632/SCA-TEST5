@@ -44,6 +44,8 @@ with open("sca_report.txt", "w") as f:
             )
             pkg = v.get("package_name") or v.get("dependency") or "unknown"
             version = v.get("affected_version") or v.get("version") or "unknown"
-            f.write(f"Package: {pkg} | Version: {version} | CVE: {cve} | Severity: {sev}\n")
+            f.write(
+                f"Package: {pkg} | Version: {version} | CVE: {cve} | Severity: {sev}\n"
+            )
 
 print("TXT report generated successfully: sca_report.txt")
