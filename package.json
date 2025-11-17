@@ -1,0 +1,12 @@
+{
+  "name": "sca-lab-demo",
+  "version": "1.0.0",
+  "description": "Lab SCA avec une dépendance vulnérable",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "lodash": "4.17.4"
+  }
+}
